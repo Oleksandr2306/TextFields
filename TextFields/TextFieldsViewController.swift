@@ -92,28 +92,28 @@ class TextFieldsViewController: UIViewController {
         
         if textFieldManager.passwordTextFieldIsFull(textField: sender) {
             conditionLabel1.text = "✓ min length 8 characters."
-            conditionLabel1.textColor = .green
+            conditionLabel1.textColor = .systemGreen
         } else {
             conditionLabel1.text = "- min length 8 characters."
             conditionLabel1.textColor = .black
         }
         if textFieldManager.passwordTextFieldHasDigit(textField: sender) {
             conditionLabel2.text = "✓ min 1 digit."
-            conditionLabel2.textColor = .green
+            conditionLabel2.textColor = .systemGreen
         } else {
             conditionLabel2.text = "- min 1 digit."
             conditionLabel2.textColor = .black
         }
         if textFieldManager.passwordTextFieldHasLowercase(textField: sender) {
             conditionLabel3.text = "✓ min 1 lowercased."
-            conditionLabel3.textColor = .green
+            conditionLabel3.textColor = .systemGreen
         } else {
             conditionLabel3.text = "- min 1 lowercased."
             conditionLabel3.textColor = .black
         }
         if textFieldManager.passwordTextFieldHasUppercase(textField: sender) {
             conditionLabel4.text = "✓ min 1 uppercased."
-            conditionLabel4.textColor = .green
+            conditionLabel4.textColor = .systemGreen
         } else {
             conditionLabel4.text = "- min 1 uppercased."
             conditionLabel4.textColor = .black
