@@ -112,7 +112,7 @@
 				F06693042896964A00F49AF2 /* AppDelegate.swift */,
 				F06693062896964A00F49AF2 /* SceneDelegate.swift */,
 				F066930A2896964A00F49AF2 /* Main.storyboard */,
-				F0551B742896C15D00E380DA /* TextFieldsViewController.swift */,
+				F0CE92EE2899521A005DF3FF /* Views */,
 				F0551B762896CCB400E380DA /* Models */,
 				F06693102896964B00F49AF2 /* Assets.xcassets */,
 				F06693122896964B00F49AF2 /* LaunchScreen.storyboard */,
@@ -136,6 +136,14 @@
 				F066932A2896964B00F49AF2 /* TextFieldsUITestsLaunchTests.swift */,
 			);
 			path = TextFieldsUITests;
+			sourceTree = "<group>";
+		};
+		F0CE92EE2899521A005DF3FF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F0551B742896C15D00E380DA /* TextFieldsViewController.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
