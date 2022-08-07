@@ -16,7 +16,7 @@
 		F066931F2896964B00F49AF2 /* TextFieldsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F066931E2896964B00F49AF2 /* TextFieldsTests.swift */; };
 		F06693292896964B00F49AF2 /* TextFieldsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06693282896964B00F49AF2 /* TextFieldsUITests.swift */; };
 		F066932B2896964B00F49AF2 /* TextFieldsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F066932A2896964B00F49AF2 /* TextFieldsUITestsLaunchTests.swift */; };
-		F0E5CD412896CD1D009BBC69 /* TextFieldManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E5CD402896CD1D009BBC69 /* TextFieldManager.swift */; };
+		F0E5CD412896CD1D009BBC69 /* TextValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E5CD402896CD1D009BBC69 /* TextValidator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +50,7 @@
 		F06693242896964B00F49AF2 /* TextFieldsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TextFieldsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F06693282896964B00F49AF2 /* TextFieldsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldsUITests.swift; sourceTree = "<group>"; };
 		F066932A2896964B00F49AF2 /* TextFieldsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldsUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		F0E5CD402896CD1D009BBC69 /* TextFieldManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldManager.swift; sourceTree = "<group>"; };
+		F0E5CD402896CD1D009BBC69 /* TextValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextValidator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +81,7 @@
 		F0551B762896CCB400E380DA /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				F0E5CD402896CD1D009BBC69 /* TextFieldManager.swift */,
+				F0E5CD402896CD1D009BBC69 /* TextValidator.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -278,7 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0551B752896C15D00E380DA /* TextFieldsViewController.swift in Sources */,
-				F0E5CD412896CD1D009BBC69 /* TextFieldManager.swift in Sources */,
+				F0E5CD412896CD1D009BBC69 /* TextValidator.swift in Sources */,
 				F06693052896964A00F49AF2 /* AppDelegate.swift in Sources */,
 				F06693072896964A00F49AF2 /* SceneDelegate.swift in Sources */,
 			);

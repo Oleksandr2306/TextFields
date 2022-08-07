@@ -8,7 +8,7 @@
 import UIKit
 import SafariServices
 
-class TextFieldsViewController: UIViewController {
+final class TextFieldsViewController: UIViewController {
     @IBOutlet weak private var noDigitTextField: UITextField!
     @IBOutlet weak private var limitTextField: UITextField!
     @IBOutlet weak private var maskTextField: UITextField!
@@ -16,18 +16,19 @@ class TextFieldsViewController: UIViewController {
     @IBOutlet weak private var linkTextField: UITextField!
     
     @IBOutlet weak private var symbolsNumberLabel: UILabel!
-    @IBOutlet weak private var conditionLabel1: UILabel!
-    @IBOutlet weak private var conditionLabel2: UILabel!
-    @IBOutlet weak private var conditionLabel3: UILabel!
-    @IBOutlet weak private var conditionLabel4: UILabel!
+    @IBOutlet var passwordConditionLabels: [UILabel]!
     
     @IBOutlet weak private var progressBar: UIProgressView!
     
-    private var textFieldManager = TextFieldManager()
+    lazy private var textValidator = TextValidator()
     private var timer: Timer!
+    
+    private let defaultBorderColor = UIColor(red: 118/256, green: 118/256, blue: 128/256, alpha: 0.12)
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         noDigitTextField.delegate = self
         limitTextField.delegate = self
@@ -39,116 +40,137 @@ class TextFieldsViewController: UIViewController {
         
     }
     
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if passwordTextField.isEditing && self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
     @IBAction private func nonDigitTextFieldEditing(_ sender: UITextField) {
-        textFieldManager.nonDigitTextFieldInput(textField: sender)
+        textValidator.nonDigitTextFieldInput(textField: sender)
     }
     
     @IBAction private func limitTextFieldEditing(_ sender: UITextField) {
-        textFieldManager.limitTextFieldInput(textField: sender, symbolsNumber: symbolsNumberLabel)
+        let symbolsNumber = textValidator.limitTextFieldInput(textField: sender)
+        symbolsNumberLabel.text = "\(10 - symbolsNumber)"
+        
+        if symbolsNumber > 10 {
+            setBorderColor(textField: sender, color: .systemRed)
+            symbolsNumberLabel.textColor = .systemRed
+        } else {
+            setBorderColor(textField: sender, color: .systemBlue)
+            symbolsNumberLabel.textColor = .black
+        }
     }
     
     @IBAction private func maskTextFieldEditing(_ sender: UITextField) {
-        textFieldManager.maskTextFieldInput(textField: sender)
+        textValidator.maskTextFieldInput(textField: sender)
     }
     
-    
     @IBAction private func linkTextFieldTapped(_ sender: UITextField) {
+        guard sender.text!.isEmpty else { return }
         sender.text = "https://"
     }
     
     @IBAction private func linkTextFieldEditing(_ sender: UITextField) {
-        timer = Timer()
         timer?.invalidate()
-        guard let symbolsNumber = sender.text?.count else { return }
-        if symbolsNumber > 8 {
-            timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(startTimer), userInfo: nil, repeats: false)
-        }
+        guard let url = textValidator.linkTextFieldInput(textField: sender) else { return }
+        timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { _ in
+            self.openSafari(url: url)
+        })
+        
     }
     
     @IBAction private func passwordTextFieldEditing(_ sender: UITextField) {
-        let progress = textFieldManager.passwordTextFieldInput(textField: sender)
+        let progress = textValidator.passwordTextFieldInput(textField: sender)
         progressBar.progress = progress
+        progressBar.progressTintColor = setProgressBarColor(progress: progress)
         
-        switch progress {
-        case 0.25:
-            progressBar.progressTintColor = .red
-            break
-        case 0.5:
-            progressBar.progressTintColor = .orange
-            break
-        case 0.75:
-            progressBar.progressTintColor = .yellow
-            break
-        case 1:
-            progressBar.progressTintColor = .green
-            break
-        default:
-            break
-        }
-        
-        if textFieldManager.passwordTextFieldIsFull(textField: sender) {
-            conditionLabel1.text = "✓ min length 8 characters."
-            conditionLabel1.textColor = .systemGreen
+        if textValidator.passwordTextFieldIsFull(textField: sender) {
+            passwordConditionLabels[0].text = "✓ min length 8 characters."
+            passwordConditionLabels[0].textColor = .systemGreen
         } else {
-            conditionLabel1.text = "- min length 8 characters."
-            conditionLabel1.textColor = .black
+            passwordConditionLabels[0].text = "- min length 8 characters."
+            passwordConditionLabels[0].textColor = .black
         }
-        if textFieldManager.passwordTextFieldHasDigit(textField: sender) {
-            conditionLabel2.text = "✓ min 1 digit."
-            conditionLabel2.textColor = .systemGreen
+        if textValidator.passwordTextFieldHasDigit(textField: sender) {
+            passwordConditionLabels[1].text = "✓ min 1 digit."
+            passwordConditionLabels[1].textColor = .systemGreen
         } else {
-            conditionLabel2.text = "- min 1 digit."
-            conditionLabel2.textColor = .black
+            passwordConditionLabels[1].text = "- min 1 digit."
+            passwordConditionLabels[1].textColor = .black
         }
-        if textFieldManager.passwordTextFieldHasLowercase(textField: sender) {
-            conditionLabel3.text = "✓ min 1 lowercased."
-            conditionLabel3.textColor = .systemGreen
+        if textValidator.passwordTextFieldHasLowercase(textField: sender) {
+            passwordConditionLabels[2].text = "✓ min 1 lowercased."
+            passwordConditionLabels[2].textColor = .systemGreen
         } else {
-            conditionLabel3.text = "- min 1 lowercased."
-            conditionLabel3.textColor = .black
+            passwordConditionLabels[2].text = "- min 1 lowercased."
+            passwordConditionLabels[2].textColor = .black
         }
-        if textFieldManager.passwordTextFieldHasUppercase(textField: sender) {
-            conditionLabel4.text = "✓ min 1 uppercased."
-            conditionLabel4.textColor = .systemGreen
+        if textValidator.passwordTextFieldHasUppercase(textField: sender) {
+            passwordConditionLabels[3].text = "✓ min 1 uppercased."
+            passwordConditionLabels[3].textColor = .systemGreen
         } else {
-            conditionLabel4.text = "- min 1 uppercased."
-            conditionLabel4.textColor = .black
+            passwordConditionLabels[3].text = "- min 1 uppercased."
+            passwordConditionLabels[3].textColor = .black
         }
     }
     
-    @objc private func startTimer() {
-        timer?.invalidate()
-        let url = textFieldManager.linkTextFieldInput(textField: linkTextField)
-        if url.absoluteString.hasPrefix("https://") || url.absoluteString.hasPrefix("http://") {
-            let safariVewController = SFSafariViewController(url: url)
-            present(safariVewController, animated: true)
-        } else {
-            textFieldManager.setRedBorderColor(textField: linkTextField)
-        }
+    private func openSafari(url: URL) {
+        let safariVewController = SFSafariViewController(url: url)
+        present(safariVewController, animated: true)
     }
     
     private func setDefaultBorders() {
-        textFieldManager.setDefaultBorderColor(textField: noDigitTextField)
-        textFieldManager.setDefaultBorderColor(textField: limitTextField)
-        textFieldManager.setDefaultBorderColor(textField: maskTextField)
-        textFieldManager.setDefaultBorderColor(textField: limitTextField)
-        textFieldManager.setDefaultBorderColor(textField: passwordTextField)
+        setBorderColor(textField: noDigitTextField, color: defaultBorderColor)
+        setBorderColor(textField: limitTextField, color: defaultBorderColor)
+        setBorderColor(textField: maskTextField, color: defaultBorderColor)
+        setBorderColor(textField: passwordTextField, color: defaultBorderColor)
+        setBorderColor(textField: linkTextField, color: defaultBorderColor)
     }
     
+    private func setBorderColor(textField: UITextField, color: UIColor) {
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = color.cgColor
+        textField.layer.cornerRadius = 10
+    }
+    
+    private func setProgressBarColor(progress: Float) -> UIColor {
+        switch progress {
+        case 0.25:
+            return .systemRed
+        case 0.5:
+            return .systemOrange
+        case 0.75:
+            return .systemYellow
+        case 1:
+            return .systemGreen
+        default:
+            return .clear
+        }
+    }
 }
 
 extension TextFieldsViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        textFieldManager.setBlueBorderColor(textField: textField)
+        setBorderColor(textField: textField, color: .systemBlue)
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        textFieldManager.setDefaultBorderColor(textField: textField)
+        setBorderColor(textField: textField, color: defaultBorderColor)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
