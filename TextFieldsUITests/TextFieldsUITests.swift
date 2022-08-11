@@ -9,34 +9,106 @@ import XCTest
 
 class TextFieldsUITests: XCTestCase {
 
+    var app: XCUIApplication!
+    lazy var noDigitTextField = app.textFields["NoDigitTextField"]
+    lazy var limitTextField = app.textFields["LimitTextField"]
+    lazy var maskTextField = app.textFields["MaskTextField"]
+    lazy var linkTextField = app.textFields["LinkTextField"]
+    lazy var passwordTextField = app.secureTextFields["PasswordTextField"]
+    lazy var symbolsNumberLabel = app.staticTexts["SymbolsNumberLabel"]
+    lazy var progressBar = app.progressIndicators["ProgressBar"]
+    lazy var conditionLabels = [app.staticTexts["ConditionLabel1"],
+                                app.staticTexts["ConditionLabel2"],
+                                app.staticTexts["ConditionLabel3"],
+                                app.staticTexts["ConditionLabel4"]
+    ]
+    lazy var returnKey = app.buttons["Return"]
+    lazy var deleteKey = XCUIKeyboardKey.delete
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+        app = XCUIApplication()
         app.launch()
-
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
+    
+    
+    func test_UIExists() throws {
+        XCTAssertTrue(noDigitTextField.exists)
+        XCTAssertTrue(limitTextField.exists)
+        XCTAssertTrue(maskTextField.exists)
+        XCTAssertTrue(linkTextField.exists)
+        XCTAssertTrue(passwordTextField.exists)
+        XCTAssertTrue(symbolsNumberLabel.exists)
+        XCTAssertTrue(progressBar.exists)
+        for element in conditionLabels {
+            XCTAssertTrue(element.exists)
         }
     }
+    
+    func test_keyBoard_closeFine() throws {
+        noDigitTextField.tap()
+        noDigitTextField.typeText("sssss")
+        returnKey.tap()
+        XCTAssertTrue(app.keyboards.count == 0)
+        noDigitTextField.tap()
+        app.tap()
+        XCTAssertTrue(app.keyboards.count == 0)
+    }
+    
+    func test_noDigitTextField_Input() throws {
+        noDigitTextField.tap()
+        noDigitTextField.typeText("qwerty 23 sss")
+        let result = noDigitTextField.value as! String
+        let expectedResult = "qwerty  sss"
+        XCTAssertEqual(result, expectedResult)
+    }
+    
+    func test_limitTextField_hasCorrectLabel() throws {
+        limitTextField.tap()
+        limitTextField.typeText("sssss sssss")
+        let result = symbolsNumberLabel.label
+        let expectedResult = "-1"
+        XCTAssertEqual(result, expectedResult)
+    }
+    
+    func test_maskTextField_Input() throws {
+        maskTextField.tap()
+        maskTextField.typeText("sdwdsddws")
+        let result = maskTextField.value as! String
+        let expectedResult = "sdwds-"
+        XCTAssertEqual(result, expectedResult)
+    }
+    
+    func test_linkTextField_hasStartingPrefix() throws {
+        linkTextField.tap()
+        let result = linkTextField.value as! String
+        let expectedResult = "https://"
+        XCTAssertEqual(result, expectedResult)
+    }
+    
+    func test_linkTextField_inputValidLink() throws {
+        linkTextField.tap()
+        linkTextField.typeText("google.com.ua")
+        XCTAssertTrue(app.otherElements["URL"].waitForExistence(timeout: 4))
+    }
+    
+    func test_linkTextField_inputWrongLink() throws {
+        linkTextField.tap()
+        linkTextField.typeText("ssssss")
+        XCTAssertFalse(app.otherElements["URL"].waitForExistence(timeout: 4))
+    }
+    
+    func test_passwordTextField_HasCorrectLabels() throws {
+        passwordTextField.tap()
+        passwordTextField.typeText("sS1qwerty")
+        let expectedResults = ["✓ min length 8 characters.",
+                               "✓ min 1 digit.",
+                               "✓ min 1 lowercased.",
+                               "✓ min 1 uppercased."
+        ]
+        for result in 0...expectedResults.count - 1 {
+            XCTAssertEqual(conditionLabels[result].label, expectedResults[result])
+        }
+    }
+    
 }

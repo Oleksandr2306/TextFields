@@ -37,7 +37,6 @@ final class TextFieldsViewController: UIViewController {
         passwordTextField.delegate = self
         symbolsNumberLabel.text = "10"
         progressBar.progress = 0
-        
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
