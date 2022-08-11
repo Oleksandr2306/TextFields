@@ -40,7 +40,7 @@ final class TextValidator {
         guard let text = textField.text else { return URL(string: "") }
         guard let url = URL(string: text) else { return URL(string: "") }
         
-        if (url.absoluteString.hasPrefix("https://") || url.absoluteString.hasPrefix("http://")) && url.absoluteString.contains(".") {
+        if isValidURL(url: url) {
             return url
         }
         
@@ -107,6 +107,13 @@ final class TextValidator {
             if symbol.isUppercase {
                 return true
             }
+        }
+        return false
+    }
+    
+    private func isValidURL(url: URL) -> Bool {
+        if (url.absoluteString.hasPrefix("https://") || url.absoluteString.hasPrefix("http://")) && url.absoluteString.contains(".") {
+            return true
         }
         return false
     }

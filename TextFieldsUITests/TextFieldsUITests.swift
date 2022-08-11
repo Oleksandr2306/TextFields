@@ -45,7 +45,7 @@ class TextFieldsUITests: XCTestCase {
         }
     }
     
-    func test_keyBoard_closeFine() throws {
+    func test_keyboard_closeFine() throws {
         noDigitTextField.tap()
         noDigitTextField.typeText("sssss")
         returnKey.tap()
@@ -109,6 +109,15 @@ class TextFieldsUITests: XCTestCase {
         for result in 0...expectedResults.count - 1 {
             XCTAssertEqual(conditionLabels[result].label, expectedResults[result])
         }
+    }
+    
+    func test_keyboard_isLifted() throws {
+        let originalPosition = passwordTextField.frame.origin.y
+        print(originalPosition)
+        passwordTextField.tap()
+        passwordTextField.typeText("s")
+        let newPosition = passwordTextField.frame.origin.y
+        XCTAssertTrue(originalPosition != newPosition)
     }
     
 }
