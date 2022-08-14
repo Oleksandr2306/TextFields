@@ -10,21 +10,19 @@ import UIKit
 
 final class TextValidator {
     
-    func nonDigitTextFieldInput(textField: UITextField) {
-        guard let text = textField.text else { return }
-        textField.text = text.filter{ !$0.isNumber }
+    func nonDigitTextFieldInput(input: String) -> String {
+        let result = input.filter{ !$0.isNumber }
+        return result
     }
     
-    func limitTextFieldInput(textField: UITextField) -> Int {
-        guard let text = textField.text else { return 0 }
-        return text.count
+    func limitTextFieldInput(input: String) -> Int {
+        return input.count
     }
     
-    func maskTextFieldInput(textField: UITextField) {
-        guard let text = textField.text else { return }
+    func maskTextFieldInput(input: String) -> String {
         var resultString = ""
         
-        for symbol in text {
+        for symbol in input {
             if resultString.shouldAppendDash {
                 resultString.append("-")
             } else if resultString.shouldInsertLetter {
@@ -33,12 +31,11 @@ final class TextValidator {
                 symbol.isNumber ? resultString.append(symbol) : resultString.append("")
             }
         }
-        textField.text = resultString
+        return resultString
     }
     
-    func linkTextFieldInput(textField: UITextField) -> URL? {
-        guard let text = textField.text else { return URL(string: "") }
-        guard let url = URL(string: text) else { return URL(string: "") }
+    func linkTextFieldInput(input: String) -> URL? {
+        guard let url = URL(string: input) else { return URL(string: "") }
         
         if isValidURL(url: url) {
             return url
@@ -47,41 +44,37 @@ final class TextValidator {
         return URL(string: "")
     }
     
-    func passwordTextFieldInput(textField: UITextField) -> Float {
+    func passwordTextFieldInput(input: String) -> Float {
         var progress: Float = 0
         
-        if passwordTextFieldIsFull(textField: textField) {
+        if passwordTextFieldIsFull(input: input) {
             progress += 0.25
         }
         
-        if passwordTextFieldHasDigit(textField: textField) {
+        if passwordTextFieldHasDigit(input: input) {
             progress += 0.25
         }
         
-        if passwordTextFieldHasLowercase(textField: textField) {
+        if passwordTextFieldHasLowercase(input: input) {
             progress += 0.25
         }
         
-        if passwordTextFieldHasUppercase(textField: textField) {
+        if passwordTextFieldHasUppercase(input: input) {
             progress += 0.25
         }
         
         return progress
     }
     
-    func passwordTextFieldIsFull(textField: UITextField) -> Bool {
-        guard let text = textField.text else { return false }
-        
-        if text.count >= 8 {
+    func passwordTextFieldIsFull(input: String) -> Bool {
+        if input.count >= 8 {
             return true
         }
         return false
     }
     
-    func passwordTextFieldHasDigit(textField: UITextField) -> Bool {
-        guard let text = textField.text else { return false }
-        
-        for symbol in text {
+    func passwordTextFieldHasDigit(input: String) -> Bool {
+        for symbol in input {
             if symbol.isNumber {
                 return true
             }
@@ -89,10 +82,8 @@ final class TextValidator {
         return false
     }
     
-    func passwordTextFieldHasLowercase(textField: UITextField) -> Bool {
-        guard let text = textField.text else { return false }
-        
-        for symbol in text {
+    func passwordTextFieldHasLowercase(input: String) -> Bool {
+        for symbol in input {
             if symbol.isLowercase {
                 return true
             }
@@ -100,10 +91,8 @@ final class TextValidator {
         return false
     }
     
-    func passwordTextFieldHasUppercase(textField: UITextField) -> Bool {
-        guard let text = textField.text else { return false }
-        
-        for symbol in text {
+    func passwordTextFieldHasUppercase(input: String) -> Bool {
+        for symbol in input {
             if symbol.isUppercase {
                 return true
             }

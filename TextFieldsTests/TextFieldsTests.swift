@@ -9,51 +9,58 @@ import XCTest
 import UIKit
 @testable import TextFields
 
-class TextFieldsTests: XCTestCase {
+final class TextFieldsTests: XCTestCase {
     
-    var result: TextValidator!
-    var textField: UITextField!
+    private var sut: TextValidator!
     
     override func setUp() {
-        result = TextValidator()
-        textField = UITextField()
+        sut = TextValidator()
     }
     
     override func tearDown() {
-        result = nil
-        textField = nil
+        sut = nil
     }
     
     func test_correctInputMask() throws {
-        textField.text = "sssss-44444"
-        result.maskTextFieldInput(textField: textField)
-        XCTAssertEqual("sssss-44444", textField.text)
+        let inputText = "sssss444"
+        let expectedText = "sssss-44"
+        
+        let maskedText = sut.maskTextFieldInput(input: inputText)
+        
+        XCTAssertEqual(maskedText, expectedText)
     }
     
     func test_wrongInputMask() throws {
-        textField.text = "sss-sss444-444"
-        result.maskTextFieldInput(textField: textField)
-        XCTAssertEqual("sssss-44444", textField.text)
+        let inputText = "sss-sss444-444"
+        let expectedText = "sssss-44444"
+        
+        let maskedText = sut.maskTextFieldInput(input: inputText)
+        
+        XCTAssertEqual(maskedText, expectedText)
     }
     
     func test_passwordHasLowercase() throws {
-        textField.text = "SsS"
-        XCTAssertTrue(result.passwordTextFieldHasLowercase(textField: textField))
+        let inputText = "SsS"
+        
+        XCTAssertTrue(sut.passwordTextFieldHasLowercase(input: inputText))
     }
     
     func test_passwordHasUppercase() throws {
-        textField.text = "sSs"
-        XCTAssertTrue(result.passwordTextFieldHasUppercase(textField: textField))
+        let inputText = "sSs"
+        
+        XCTAssertTrue(sut.passwordTextFieldHasUppercase(input: inputText))
     }
     
     func test_passwordHasDigit() throws {
-        textField.text = "Ss3S"
-        XCTAssertTrue(result.passwordTextFieldHasDigit(textField: textField))
+        let inputText = "Ss3S"
+        
+        XCTAssertTrue(sut.passwordTextFieldHasDigit(input: inputText))
     }
     
     func test_passwordIsFull() throws {
-        textField.text = "SsS34ssdws"
-        XCTAssertTrue(result.passwordTextFieldIsFull(textField: textField))
+        let inputText = "SsS34ssdws"
+        
+        XCTAssertTrue(sut.passwordTextFieldIsFull(input: inputText))
     }
     
 }
