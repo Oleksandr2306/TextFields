@@ -59,12 +59,12 @@ final class TextFieldsViewController: UIViewController {
     
     @IBAction private func nonDigitTextFieldEditing(_ sender: UITextField) {
         guard let text = sender.text else { return }
-        sender.text = textValidator.nonDigitTextFieldInput(input: text)
+        sender.text = textValidator.nonDigitText(input: text)
     }
     
     @IBAction private func limitTextFieldEditing(_ sender: UITextField) {
         guard let text = sender.text else { return }
-        let symbolsNumber = textValidator.limitTextFieldInput(input: text)
+        let symbolsNumber = textValidator.limitedText(input: text)
         symbolsNumberLabel.text = "\(10 - symbolsNumber)"
         
         if symbolsNumber > 10 {
@@ -78,7 +78,7 @@ final class TextFieldsViewController: UIViewController {
     
     @IBAction private func maskTextFieldEditing(_ sender: UITextField) {
         guard let text = sender.text else { return }
-        sender.text = textValidator.maskTextFieldInput(input: text)
+        sender.text = textValidator.maskedText(input: text)
     }
     
     @IBAction private func linkTextFieldTapped(_ sender: UITextField) {
@@ -89,7 +89,7 @@ final class TextFieldsViewController: UIViewController {
     @IBAction private func linkTextFieldEditing(_ sender: UITextField) {
         timer?.invalidate()
         guard let text = sender.text else { return }
-        guard let url = textValidator.linkTextFieldInput(input: text) else { return }
+        guard let url = textValidator.linkText(input: text) else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { _ in
             self.openSafari(url: url)
         })
@@ -98,32 +98,32 @@ final class TextFieldsViewController: UIViewController {
     
     @IBAction private func passwordTextFieldEditing(_ sender: UITextField) {
         guard let text = sender.text else { return }
-        let progress = textValidator.passwordTextFieldInput(input: text)
+        let progress = textValidator.passwordText(input: text)
         progressBar.progress = progress
         progressBar.progressTintColor = setProgressBarColor(progress: progress)
         
-        if textValidator.passwordTextFieldIsFull(input: text) {
+        if textValidator.passwordTextIsFull(input: text) {
             passwordConditionLabels[0].text = "✓ min length 8 characters."
             passwordConditionLabels[0].textColor = .systemGreen
         } else {
             passwordConditionLabels[0].text = "- min length 8 characters."
             passwordConditionLabels[0].textColor = .black
         }
-        if textValidator.passwordTextFieldHasDigit(input: text) {
+        if textValidator.passwordTextHasDigit(input: text) {
             passwordConditionLabels[1].text = "✓ min 1 digit."
             passwordConditionLabels[1].textColor = .systemGreen
         } else {
             passwordConditionLabels[1].text = "- min 1 digit."
             passwordConditionLabels[1].textColor = .black
         }
-        if textValidator.passwordTextFieldHasLowercase(input: text) {
+        if textValidator.passwordTextHasLowercase(input: text) {
             passwordConditionLabels[2].text = "✓ min 1 lowercased."
             passwordConditionLabels[2].textColor = .systemGreen
         } else {
             passwordConditionLabels[2].text = "- min 1 lowercased."
             passwordConditionLabels[2].textColor = .black
         }
-        if textValidator.passwordTextFieldHasUppercase(input: text) {
+        if textValidator.passwordTextHasUppercase(input: text) {
             passwordConditionLabels[3].text = "✓ min 1 uppercased."
             passwordConditionLabels[3].textColor = .systemGreen
         } else {

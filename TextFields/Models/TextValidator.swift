@@ -10,16 +10,16 @@ import UIKit
 
 final class TextValidator {
     
-    func nonDigitTextFieldInput(input: String) -> String {
+    func nonDigitText(input: String) -> String {
         let result = input.filter{ !$0.isNumber }
         return result
     }
     
-    func limitTextFieldInput(input: String) -> Int {
+    func limitedText(input: String) -> Int {
         return input.count
     }
     
-    func maskTextFieldInput(input: String) -> String {
+    func maskedText(input: String) -> String {
         var resultString = ""
         
         for symbol in input {
@@ -34,7 +34,7 @@ final class TextValidator {
         return resultString
     }
     
-    func linkTextFieldInput(input: String) -> URL? {
+    func linkText(input: String) -> URL? {
         guard let url = URL(string: input) else { return URL(string: "") }
         
         if isValidURL(url: url) {
@@ -44,36 +44,36 @@ final class TextValidator {
         return URL(string: "")
     }
     
-    func passwordTextFieldInput(input: String) -> Float {
+    func passwordText(input: String) -> Float {
         var progress: Float = 0
         
-        if passwordTextFieldIsFull(input: input) {
+        if passwordTextIsFull(input: input) {
             progress += 0.25
         }
         
-        if passwordTextFieldHasDigit(input: input) {
+        if passwordTextHasDigit(input: input) {
             progress += 0.25
         }
         
-        if passwordTextFieldHasLowercase(input: input) {
+        if passwordTextHasLowercase(input: input) {
             progress += 0.25
         }
         
-        if passwordTextFieldHasUppercase(input: input) {
+        if passwordTextHasUppercase(input: input) {
             progress += 0.25
         }
         
         return progress
     }
     
-    func passwordTextFieldIsFull(input: String) -> Bool {
+    func passwordTextIsFull(input: String) -> Bool {
         if input.count >= 8 {
             return true
         }
         return false
     }
     
-    func passwordTextFieldHasDigit(input: String) -> Bool {
+    func passwordTextHasDigit(input: String) -> Bool {
         for symbol in input {
             if symbol.isNumber {
                 return true
@@ -82,7 +82,7 @@ final class TextValidator {
         return false
     }
     
-    func passwordTextFieldHasLowercase(input: String) -> Bool {
+    func passwordTextHasLowercase(input: String) -> Bool {
         for symbol in input {
             if symbol.isLowercase {
                 return true
@@ -91,7 +91,7 @@ final class TextValidator {
         return false
     }
     
-    func passwordTextFieldHasUppercase(input: String) -> Bool {
+    func passwordTextHasUppercase(input: String) -> Bool {
         for symbol in input {
             if symbol.isUppercase {
                 return true
@@ -121,4 +121,5 @@ private extension String {
     var shouldAppendDash: Bool {
         self.count == 5
     }
+    
 }
