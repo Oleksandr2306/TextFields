@@ -55,7 +55,7 @@ final class TextFieldsUITests: XCTestCase {
         XCTAssertTrue(app.keyboards.count == 0)
     }
     
-    func test_noDigitTextField_Input() throws {
+    func test_noDigitTextField_input() throws {
         noDigitTextField.tap()
         noDigitTextField.typeText("qwerty 23 sss")
         let result = noDigitTextField.value as! String
@@ -71,7 +71,7 @@ final class TextFieldsUITests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
     
-    func test_maskTextField_Input() throws {
+    func test_maskTextField_input() throws {
         maskTextField.tap()
         maskTextField.typeText("sdwdsddws")
         let result = maskTextField.value as! String
@@ -98,7 +98,7 @@ final class TextFieldsUITests: XCTestCase {
         XCTAssertFalse(app.otherElements["URL"].waitForExistence(timeout: 4))
     }
     
-    func test_passwordTextField_HasCorrectLabels() throws {
+    func test_passwordTextField_hasCorrectLabels() throws {
         passwordTextField.tap()
         passwordTextField.typeText("sS1qwerty")
         let expectedResults = ["✓ min length 8 characters.",
